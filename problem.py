@@ -7,22 +7,7 @@
 import pdb
 from random import randint
 import math
-
-# Enums for Problems and functions
-DEFAULT_PROBLEM = {
-  "MAX_ITERATION": 1000000
-}
-
-DEFAULT_FUNCTION = {
-  "MAX_TERMS": 10
-}
-
-DEFAULT_TERM = {
-  "MAX_DIMENSIONS": 3,
-  "MAX_POWER": 4,
-  "MAX_CONSTANT": 10,
-  "MIN_CONSTANT": -10
-}
+from globals import *
 
 # Class definiton of a problem
 class Problem(object):
