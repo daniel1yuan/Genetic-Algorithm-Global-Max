@@ -9,6 +9,7 @@ class Polynomial(object):
   def __init__(self, terms=None, polynomial=None, num_terms=None, num_dimensions=None, seed=None):
     self.seed = seed
     random.seed(seed)
+    self.dimensions = num_dimensions
 
     self.terms = terms if terms else self._generate_random_polynomial(num_terms, num_dimensions)
 

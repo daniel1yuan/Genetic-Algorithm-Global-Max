@@ -4,6 +4,9 @@
 from problem.term import Term
 from problem.polynomial import Polynomial
 
+def get_feasible_range(iterations):
+
+
 def main():
   polynomial = Polynomial(num_terms=1, num_dimensions=2)
 
