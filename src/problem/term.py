@@ -1,8 +1,10 @@
+# -*- coding: utf-8 -*-
 # @file: Term of a Polynomial
 # @author: Daniel Yuan
 
 import random
 import logging as log
+from utils.unicode import super_script, sub_script
 from constants import TERM_DEFAULT_MIN_POWER, TERM_DEFAULT_MAX_POWER, TERM_DEFAULT_MIN_K, TERM_DEFAULT_MAX_K
 
 # Class definition for a Term of a funcion
@@ -33,17 +35,22 @@ class Term(object):
     assert(values and len(values) == len(self.exponents))
     solution = 1
 
-    for i, val in enumerate(values):
+    for i, value in enumerate(values):
       solution *= float(value) ** self.exponents[i]
 
     return self.k * solution
 
   def __repr__(self):
-    repr_str = 'TERM: {}'.format(self.k)
-    for i, exp in enumerate(self.exponents):
-      repr_str += '(b{}^{})'.format(i, exp)
+    return 'TERM: {}'.format(str(self))
 
-    return repr_str
+  def __str__(self):
+    str = u'{}'.format(self.k)
+    for i, exp in enumerate(self.exponents):
+      if exp is not 0:
+        str += u'⋅b{}{}'.format(sub_script(i), super_script(exp))
+
+    return str.encode('utf-8')
+
 
   def _parse_term(self, term):
     self.k = term.k
