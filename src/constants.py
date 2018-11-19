@@ -1,0 +1,10 @@
+# Constants for Global Max
+
+# Polynomial Constants
+POLYNOMIAL_DEFAULT_MAX_DIMENSIONS = 4
+
+# Term Constants
+TERM_DEFAULT_MAX_POWER = 5
+TERM_DEFAULT_MIN_POWER = 0
+TERM_DEFAULT_MIN_K = -100
+TERM_DEFAULT_MAX_K = 100
