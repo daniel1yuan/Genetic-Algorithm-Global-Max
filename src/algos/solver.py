@@ -3,16 +3,17 @@
 import math
 
 class Solver(object):
-  def __init__(self, problem=None, threads=1):
+  def __init__(self, search_range=None, problem=None, threads=1):
     self.range = None
     self.problem = None
-    self.threads = 1
+    self.search_range = search_range
+    self.threads = threads
 
   def solve(self):
-    assert(self.range and self.problem)
+    pass
 
-  def set_range(self, range):
-    self.range = range
+  def set_range(self, search_range):
+    self.search_range = search_range
 
-  def feasible_range(self, iterations, dimensions):
-    return math.log(iterations, dimensions)
+  def set_problem(self, problem):
+    self.problem = problem

@@ -27,7 +27,7 @@ class Term(object):
     else:
       self.seed = seed
       random.seed(seed)
-      self.k = random.randint(TERM_DEFAULT_MIN_K, TERM_DEFAULT_MAX_K)
+      self.k = random.uniform(TERM_DEFAULT_MIN_K, TERM_DEFAULT_MAX_K)
       self.dimensions = dimensions
       self.exponents = self._generate_random_exponents(dimensions)
 
