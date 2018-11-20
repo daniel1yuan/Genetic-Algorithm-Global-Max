@@ -59,3 +59,9 @@ class Gui(object):
 
     self.plot.plot_trisurf(x_points,y_points,z_points)
     plt.show()
+
+  def update(self, i):
+    pass
+
+  def create_animation(self, solvers):
+    label = '{}: {}'
