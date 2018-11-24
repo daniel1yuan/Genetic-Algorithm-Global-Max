@@ -58,6 +58,12 @@ class Gui(object):
     z_points = np.array(normalize(z_points))
 
     self.plot.plot_trisurf(x_points,y_points,z_points)
+
+  def save(self):
+    filename = 'animation.gif'
+    log.info('Saving Animation to {}'.format(filename))
+
+  def show(self):
     plt.show()
 
   def update(self, i):
