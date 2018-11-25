@@ -25,16 +25,19 @@ def main():
 
   # Define Search Range
   search_range = SearchRange()
-  search_range.set_feasible_range(1000000, 2)
+  search_range.set_feasible_range(10, 2)
 
   # Solvers
   brute_force_solver = BruteForceSolver(search_range)
 
   gui = Gui(search_range)
-  benchmark = Benchmark([brute_force_solver])
+  # benchmark = Benchmark([brute_force_solver])
 
-  # Create Visual
+  # Create Default Visual
   gui.plot_problem(polynomial)
+
+  # Visualize Solvers
+  gui.create_animation(polynomial, [brute_force_solver])
 
   # Benchmark
   # benchmark.evaluate(polynomial)

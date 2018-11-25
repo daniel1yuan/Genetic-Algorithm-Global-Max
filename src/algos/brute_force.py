@@ -3,6 +3,7 @@
 
 import itertools
 import numpy as np
+import uuid
 from solver import Solver
 
 class BruteForceSolver(Solver):
@@ -10,22 +11,43 @@ class BruteForceSolver(Solver):
     Solver.__init__(self, search_range, problem, threads)
     self.solver_name = 'Brute Force Solver'
 
-  def solve(self, problem=None):
-    if problem:
-      return self._solve(problem)
-    else:
-      return self._solve(self.problem)
+  def solve(self, problem=None, storage=False):
+    if storage:
+      self.storage = []
 
-  def _solve(self, problem):
+    if problem:
+      return self._solve(problem, storage)
+    else:
+      return self._solve(self.problem, storage)
+
+  def _solve(self, problem, storage):
     dimensions = problem.dimensions
     max_solution = -1 * np.Inf
     max_vector = None
 
-    for idx in itertools.product(*[range(0, int(self.search_range)) for _ in range(dimensions)]):
+    min_index = self.search_range.get_min()
+    max_index = self.search_range.get_max()
+    search_resolution = self.search_range.get_dimension_resolution()
+    num_points = float(abs(max_index - min_index))/search_resolution
+
+    search_space = []
+
+
+    for _ in range(dimensions):
+      search_space.append(np.arange(min_index, max_index, num_points, dtype=float))
+
+    for idx in itertools.product(*search_space):
       vector = list(idx)
       solution = problem.eval(vector)
+
+      # Show Currently searched points
       if solution > max_solution:
         max_solution = solution
         max_vector = vector
 
-    return max_solution, max_vector
+        if self.storage is not None:
+          self.storage.append((vector, solution, True))
+      elif self.storage is not None:
+        self.storage.append((vector, solution, False))
+
+    return max_solution, max_vector, storage

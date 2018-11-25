@@ -1,6 +1,7 @@
 # @file: Gui class for displaying problem
 # @author: Daniel Yuan
 
+import pdb
 import sys
 import itertools
 import logging as log
@@ -59,15 +60,53 @@ class Gui(object):
 
     self.plot.plot_trisurf(x_points,y_points,z_points)
 
-  def save(self):
-    filename = 'animation.gif'
+  def save(self, name):
+    filename = '{}_animation.gif'.format(name)
     log.info('Saving Animation to {}'.format(filename))
 
   def show(self):
     plt.show()
 
   def update(self, i):
-    pass
+    plots = []
 
-  def create_animation(self, solvers):
-    label = '{}: {}'
+    for _, storage in self.storage.iteritems():
+      solver = storage['solver']
+      plot = storage['plot']
+      solution = solver.get_storage(i)
+
+      if solution:
+        x = []
+        y = []
+        z = []
+        for point in solution:
+          vector = point[0]
+          value = point[1]
+          is_current_max = point[2]
+
+          x.append(vector[0])
+          y.append(vector[1])
+          z.append(value)
+
+        plot._offsets3d = (x,y,z)
+        plots.append(plot)
+
+    return plots
+
+  def create_animation(self, problem, solvers):
+    self.fig = plt.figure()
+    self.plot_problem(problem)
+    self.solvers = solvers
+    self.storage = {}
+    for solver in solvers:
+      self.storage[solver._id] = {
+        'solver': solver,
+        'plot': self.plot.scatter([],[],[], animated=True)
+      }
+      solver.solve(problem, True)
+
+    self.title = self.plot.set_title('')
+
+    self.anim = FuncAnimation(self.fig, self.update, interval=20, blit=True)
+
+    plt.show()
