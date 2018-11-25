@@ -50,4 +50,4 @@ class BruteForceSolver(Solver):
       elif self.storage is not None:
         self.storage.append((vector, solution, False))
 
-    return max_solution, max_vector, storage
+    return max_solution, max_vector
