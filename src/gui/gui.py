@@ -22,7 +22,17 @@ class Gui(object):
     self.problem = problem
 
   def set_solvers(self, solvers):
-    self.solvers = solvers
+    self.solvers = solver
+
+  def _create_subplot(self):
+    plot = self.fig.add_subplot(122, projection='3d')
+    plot.set_xlabel('X Axis')
+    plot.set_ylabel('Y Axis')
+    plot.set_zlabel('Z Axis')
+    plot.set_xlim([-1, 1])
+    plot.set_ylim([-1, 1])
+    plot.set_zlim([-1, 1])
+    return plot
 
   def plot_problem(self, problem):
     self.set_problem(problem)
@@ -32,14 +42,13 @@ class Gui(object):
       log.warning('Can\'t plot problem as it is greater than 3 spacial dimensions')
       return
 
-
     if dimensions is 2:
-      self.plot = self.fig.add_subplot(111, projection='3d')
+      self.plot = self.fig.add_subplot(121, projection='3d')
       self.plot.set_xlabel('X Axis')
       self.plot.set_ylabel('Y Axis')
       self.plot.set_zlabel('Z Axis')
     else:
-      self.plot = self.fig.add_subplot(111)
+      self.plot = self.fig.add_subplot(121)
 
     x_points = []
     y_points = []
@@ -72,13 +81,17 @@ class Gui(object):
 
     for _, storage in self.storage.iteritems():
       solver = storage['solver']
-      plot = storage['plot']
+      plot, = storage['plot']
+      max_plot, = storage['max_plot']
       solution = solver.get_storage(i)
 
       if solution:
         x = []
         y = []
         z = []
+
+        max_value = -1 * np.Inf
+        max_solution = None
         for point in solution:
           vector = point[0]
           value = point[1]
@@ -88,25 +101,36 @@ class Gui(object):
           y.append(vector[1])
           z.append(value)
 
-        plot._offsets3d = (x,y,z)
-        plots.append(plot)
+          if value > max_value:
+            max_value = value
+            max_solution = (vector[0], vector[1], value)
 
+        plot.set_data(x,y)
+        plot.set_3d_properties(z)
+
+        if max_solution:
+          max_plot.set_data(max_solution[0], max_solution[1])
+          max_plot.set_3d_properties(max_solution[2])
+          plots.append(max_plot)
+
+        plots.append(plot)
     return plots
 
   def create_animation(self, problem, solvers):
-    self.fig = plt.figure()
     self.plot_problem(problem)
     self.solvers = solvers
     self.storage = {}
     for solver in solvers:
+      plot = self._create_subplot()
       self.storage[solver._id] = {
         'solver': solver,
-        'plot': self.plot.scatter([],[],[], animated=True)
+        'plot': plot.plot([],[],[], linestyle="", marker="o", label=str(solver), alpha=0.3),
+        'max_plot': plot.plot([],[],[],linestyle="", marker="o", color='red')
       }
       solver.solve(problem, True)
 
     self.title = self.plot.set_title('')
 
-    self.anim = FuncAnimation(self.fig, self.update, interval=20, blit=True)
+    self.anim = FuncAnimation(self.fig, self.update, frames=1000, interval=20, blit=True)
 
     plt.show()

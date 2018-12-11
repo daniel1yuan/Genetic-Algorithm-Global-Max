@@ -24,7 +24,7 @@ class Solver(object):
     return len(self.storage) if self.storage else None
 
   def get_storage(self, index=None):
-    if index and self.storage is not None:
+    if index is not None and self.storage is not None:
       if index < len(self.storage) and index >= 0:
         return self.storage[:index]
       return None

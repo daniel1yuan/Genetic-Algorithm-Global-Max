@@ -31,8 +31,6 @@ class BruteForceSolver(Solver):
     num_points = float(abs(max_index - min_index))/search_resolution
 
     search_space = []
-
-
     for _ in range(dimensions):
       search_space.append(np.arange(min_index, max_index, num_points, dtype=float))
 
