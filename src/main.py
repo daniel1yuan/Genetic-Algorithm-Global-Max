@@ -26,7 +26,7 @@ def main():
 
   # Define Search Range
   search_range = SearchRange()
-  search_range.set_feasible_range(10000000, 2)
+  search_range.set_feasible_range(100, 2)
 
   # Solvers
   brute_force_solver = BruteForceSolver(search_range)
@@ -36,15 +36,15 @@ def main():
   benchmark = Benchmark([brute_force_solver, genetic_algorithm_solver])
   # benchmark = Benchmark([genetic_algorithm_solver])
 
-  # Visualize Solvers
-  # gui.create_animation(polynomial, [brute_force_solver])
-
   # Benchmark
   benchmark.evaluate(polynomial)
 
+  # Visualize Solvers
+  gui.create_animation(polynomial, [brute_force_solver])
+
   # Create Default Visual
-  gui.plot_problem(polynomial)
-  gui.show()
+  # gui.plot_problem(polynomial)
+  # gui.show()
 
 if __name__ == '__main__':
   setup_logging()

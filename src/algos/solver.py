@@ -10,6 +10,7 @@ class Solver(object):
     self.search_range = search_range
     self.threads = threads
     self.storage = None
+    self.max_iteration = self.search_range.get_max_iteration() if self.search_range else 1000
 
   def solve(self):
     pass

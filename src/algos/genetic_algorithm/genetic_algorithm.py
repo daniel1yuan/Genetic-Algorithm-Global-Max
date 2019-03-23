@@ -9,6 +9,7 @@ class GeneticAlgorithmSolver(Solver):
   def __init__(self, search_range=None, problem=None, threads=1):
     Solver.__init__(self, search_range, problem, threads)
     self.solver_name = 'Genetic Algorithm Solver'
+    self.max_iteration = self.search_range.get_max_iteration()
 
   def solve(self, problem=None, should_store=False):
     if should_store:
@@ -19,7 +20,6 @@ class GeneticAlgorithmSolver(Solver):
     self.count = 0
     self.iter_count = 0
     self.threshold = 0.05
-    self.max_iteration = 100000000000
 
     if problem:
       return self._solve(problem, should_store)

@@ -15,8 +15,8 @@ from constants import GUI_DEFAULT_PLOT_RESOLUTION
 class Gui(object):
   def __init__(self, search_range, plot_resolution=GUI_DEFAULT_PLOT_RESOLUTION):
     self.search_range = search_range
+    self.num_frames = 200
     self.plot_resolution = plot_resolution
-    self.fig = plt.figure()
 
   def set_problem(self, problem):
     self.problem = problem
@@ -32,7 +32,6 @@ class Gui(object):
       log.warning('Can\'t plot problem as it is greater than 3 spacial dimensions')
       return
 
-
     if dimensions is 2:
       self.plot = self.fig.add_subplot(111, projection='3d')
       self.plot.set_xlabel('X Axis')
@@ -40,6 +39,8 @@ class Gui(object):
       self.plot.set_zlabel('Z Axis')
     else:
       self.plot = self.fig.add_subplot(111)
+
+    return
 
     x_points = []
     y_points = []
@@ -60,6 +61,7 @@ class Gui(object):
 
     self.plot.plot_trisurf(x_points,y_points,z_points)
 
+
   def save(self, name):
     filename = '{}_animation.gif'.format(name)
     log.info('Saving Animation to {}'.format(filename))
@@ -73,7 +75,11 @@ class Gui(object):
     for _, storage in self.storage.iteritems():
       solver = storage['solver']
       plot = storage['plot']
-      solution = solver.get_storage(i)
+      solution_length = solver.get_storage_length()
+      index = int(float(i)/self.num_frames*solution_length)
+      print(index)
+      solution = solver.get_storage(index)
+      self.title.set_text('{}'.format(i))
 
       if solution:
         x = []
@@ -98,15 +104,16 @@ class Gui(object):
     self.plot_problem(problem)
     self.solvers = solvers
     self.storage = {}
+
     for solver in solvers:
       self.storage[solver._id] = {
         'solver': solver,
-        'plot': self.plot.scatter([],[],[], animated=True)
+        'plot': self.plot.scatter([],[],[])
       }
       solver.solve(problem, True)
 
     self.title = self.plot.set_title('')
 
-    self.anim = FuncAnimation(self.fig, self.update, interval=20, blit=True)
+    self.anim = FuncAnimation(self.fig, self.update, frames=self.num_frames, interval=40, blit=False)
 
     plt.show()
