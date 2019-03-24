@@ -10,38 +10,27 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.animation import FuncAnimation
 from utils.math_utils import normalize
-from constants import GUI_DEFAULT_PLOT_RESOLUTION
+from constants import GUI_DEFAULT_PLOT_RESOLUTION, GUI_DEFAULT_FRAMES
 
 class Gui(object):
-  def __init__(self, search_range, plot_resolution=GUI_DEFAULT_PLOT_RESOLUTION):
+  def __init__(self, problem, search_range, plot_resolution=GUI_DEFAULT_PLOT_RESOLUTION, num_frames=GUI_DEFAULT_FRAMES):
     self.search_range = search_range
-    self.num_frames = 200
+    self.set_problem(problem)
     self.plot_resolution = plot_resolution
+    self.num_frames = num_frames
+    self.figures = []
 
   def set_problem(self, problem):
     self.problem = problem
+    self.dimensions = problem.dimensions
 
   def set_solvers(self, solvers):
     self.solvers = solvers
 
-  def plot_problem(self, problem):
-    self.set_problem(problem)
-    dimensions = problem.dimensions
+  def plot_problem(self):
+    _, plot = self.create_plot()
 
-    if dimensions > 2:
-      log.warning('Can\'t plot problem as it is greater than 3 spacial dimensions')
-      return
-
-    if dimensions is 2:
-      self.plot = self.fig.add_subplot(111, projection='3d')
-      self.plot.set_xlabel('X Axis')
-      self.plot.set_ylabel('Y Axis')
-      self.plot.set_zlabel('Z Axis')
-    else:
-      self.plot = self.fig.add_subplot(111)
-
-    return
-
+    # Calculate points for the problem
     x_points = []
     y_points = []
     z_points = []
@@ -55,12 +44,31 @@ class Gui(object):
     for idx in itertools.product(*[x,y]):
       x_points.append(idx[0])
       y_points.append(idx[1])
-      z_points.append(problem.eval(list(idx)))
+      z_points.append(self.problem.eval(list(idx)))
 
     z_points = np.array(normalize(z_points))
 
-    self.plot.plot_trisurf(x_points,y_points,z_points)
+    plot.plot_trisurf(x_points,y_points,z_points)
 
+  def create_plot(self):
+    figure = plt.figure()
+    if self.dimensions > 2:
+      log.warning('Can\'t plot problem as it is greater than 3 spacial dimensions')
+      return
+
+    if self.dimensions is 2:
+      plot = figure.add_subplot(111, projection='3d')
+      plot.set_xlabel('X Axis')
+      plot.set_ylabel('Y Axis')
+      plot.set_zlabel('Z Axis')
+
+      plot.set_xlim(-1, 1)
+      plot.set_ylim(-1, 1)
+      plot.set_zlim(-10, 10)
+    else:
+      plot = self.fig.add_subplot(111)
+
+    return figure, plot
 
   def save(self, name):
     filename = '{}_animation.gif'.format(name)
@@ -77,7 +85,6 @@ class Gui(object):
       plot = storage['plot']
       solution_length = solver.get_storage_length()
       index = int(float(i)/self.num_frames*solution_length)
-      print(index)
       solution = solver.get_storage(index)
       self.title.set_text('{}'.format(i))
 
@@ -99,21 +106,35 @@ class Gui(object):
 
     return plots
 
-  def create_animation(self, problem, solvers):
-    self.fig = plt.figure()
-    self.plot_problem(problem)
-    self.solvers = solvers
+  def create_animation(self, solver):
     self.storage = {}
 
-    for solver in solvers:
-      self.storage[solver._id] = {
-        'solver': solver,
-        'plot': self.plot.scatter([],[],[])
-      }
-      solver.solve(problem, True)
+    figure, plot = self.create_plot()
+    scatter = plot.scatter([],[],[])
+    solver.solve(self.problem, True)
+    title = plot.set_title('')
 
-    self.title = self.plot.set_title('')
+    def update(i):
+      solution_length = solver.get_storage_length()
+      index = int(float(i)/self.num_frames*solution_length)
+      solution = solver.get_storage(index)
+      title.set_text('{}'.format(i))
 
-    self.anim = FuncAnimation(self.fig, self.update, frames=self.num_frames, interval=40, blit=False)
+      if solution:
+        x = []
+        y = []
+        z = []
+        for point in solution:
+          vector = point[0]
+          value = point[1]
+          is_current_max = point[2]
 
-    plt.show()
+          x.append(vector[0])
+          y.append(vector[1])
+          z.append(value)
+
+        scatter._offsets3d = (x,y,z)
+
+      return [scatter]
+
+    self.anim = FuncAnimation(figure, update, frames=self.num_frames, interval=self.num_frames/1000, blit=False)

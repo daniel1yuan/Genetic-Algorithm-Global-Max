@@ -29,22 +29,23 @@ def main():
   search_range.set_feasible_range(100, 2)
 
   # Solvers
-  brute_force_solver = BruteForceSolver(search_range)
+  # brute_force_solver = BruteForceSolver(search_range)
   genetic_algorithm_solver = GeneticAlgorithmSolver(search_range)
 
-  gui = Gui(search_range)
-  benchmark = Benchmark([brute_force_solver, genetic_algorithm_solver])
+  gui = Gui(polynomial, search_range)
+  # benchmark = Benchmark([brute_force_solver, genetic_algorithm_solver])
   # benchmark = Benchmark([genetic_algorithm_solver])
 
   # Benchmark
-  benchmark.evaluate(polynomial)
+  # benchmark.evaluate(polynomial)
 
   # Visualize Solvers
-  gui.create_animation(polynomial, [brute_force_solver])
+  # gui.create_animation(brute_force_solver)
+  gui.create_animation(genetic_algorithm_solver)
 
   # Create Default Visual
-  # gui.plot_problem(polynomial)
-  # gui.show()
+  # gui.plot_problem()
+  gui.show()
 
 if __name__ == '__main__':
   setup_logging()
