@@ -9,6 +9,7 @@ class GeneticAlgorithmSolver(Solver):
   def __init__(self, search_range=None, problem=None, threads=1):
     Solver.__init__(self, search_range, problem, threads)
     self.solver_name = 'Genetic Algorithm Solver'
+    self.max_iteration = self.search_range.get_max_iteration()
 
   def solve(self, problem=None, should_store=False):
     if should_store:
@@ -19,7 +20,6 @@ class GeneticAlgorithmSolver(Solver):
     self.count = 0
     self.iter_count = 0
     self.threshold = 0.05
-    self.max_iteration = 100000000000
 
     if problem:
       return self._solve(problem, should_store)
@@ -34,6 +34,9 @@ class GeneticAlgorithmSolver(Solver):
     while self._should_continue(max_fitness, max_individual):
       self.iter_count += 1
       overall_fitness, max_fitness, max_individual = population.calculate_fitness(problem)
+
+      if should_store:
+        self._store(problem, population, max_individual)
 
       population.generate_new_population()
 
@@ -58,3 +61,16 @@ class GeneticAlgorithmSolver(Solver):
       return False
 
     return True
+
+  def _store(self, problem, population, max_individual):
+    storage_vector = []
+    for individual in population.population:
+      storage_vector.append((individual.get_vector(), individual.get_fitness(problem), individual is max_individual))
+
+    self.storage.append(storage_vector)
+
+  def get_storage(self, index=None):
+    if index is not None and self.storage is not None:
+      if index < len(self.storage) and index >= 0:
+        return self.storage[index]
+    return self.storage

@@ -7,6 +7,7 @@ class Benchmark(object):
   def __init__(self, solvers):
     assert(solvers and len(solvers) > 0)
     self.solvers = solvers
+    self.benchmark = {}
 
   def evaluate(self, problem=None):
     assert(problem)
@@ -17,3 +18,13 @@ class Benchmark(object):
       end_time = timer()
       log.info('Max Solution: {} - Max Vector: {}'.format(max_solution, max_vector))
       log.info('{} took: {}s'.format(solver.solver_name, end_time - start_time))
+
+      id = solver._id
+
+      self.benchmark[id] = {
+        'solver': solver,
+        'problem': problem,
+        'max_solution': max_solution,
+        'max_vector': max_vector,
+        'time': end_time - start_time
+      }

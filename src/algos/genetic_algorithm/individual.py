@@ -24,6 +24,14 @@ class Individual(object):
       raise Exception('Trying to cross over vectors of different dimensions')
 
     cross_index = randint(0, self.dimension - 1)
+
+    if uniform(0, 1) > 0.5:
+      first_vector = self.vector
+      second_vector = other_vector.vector
+    else:
+      first_vector = other_vector.vector
+      second_vector = self.vector
+
     new_vector = []
 
     for i in range(self.dimension):
@@ -33,9 +41,9 @@ class Individual(object):
       if should_mutate:
         value = uniform(self.search_range.get_min(), self.search_range.get_max())
       elif i < cross_index:
-        value = self.vector[i]
+        value = first_vector[i]
       else:
-        value = other_vector.vector[i]
+        value = second_vector[i]
 
       new_vector.append(value)
 

@@ -10,6 +10,7 @@ class Solver(object):
     self.search_range = search_range
     self.threads = threads
     self.storage = None
+    self.max_iteration = self.search_range.get_max_iteration() if self.search_range else 1000
 
   def solve(self):
     pass
@@ -24,9 +25,4 @@ class Solver(object):
     return len(self.storage) if self.storage else None
 
   def get_storage(self, index=None):
-    if index is not None and self.storage is not None:
-      if index < len(self.storage) and index >= 0:
-        return self.storage[:index]
-      return None
-    else:
-      return self.storage
+    pass

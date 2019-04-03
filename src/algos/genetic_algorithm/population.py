@@ -46,6 +46,8 @@ class Population(object):
 
   def generate_new_population(self):
     new_population = []
+    self.population.sort(key=lambda x: x.fitness)
+
     for _ in range(self.population_size):
       parent_a = self._pick_vector()
       parent_b = self._pick_vector()
@@ -64,8 +66,6 @@ class Population(object):
 
 
   def _pick_vector(self):
-    self.population.sort(key=lambda x: x.fitness)
-
     target_fitness = uniform(0,1)
     for individual in self.population:
       target_fitness -= individual.fitness

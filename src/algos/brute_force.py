@@ -49,3 +49,11 @@ class BruteForceSolver(Solver):
         self.storage.append((vector, solution, False))
 
     return max_solution, max_vector
+
+  def get_storage(self, index=None):
+    if index and self.storage is not None:
+      if index < len(self.storage) and index >= 0:
+        return self.storage[:index]
+      return None
+    else:
+      return self.storage
