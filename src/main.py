@@ -99,6 +99,9 @@ def run_benchmark(root_folder, times, feasible_ranges):
       pickle_object(benchmark, os.path.join(run_folder, 'brute_solver.pickle'))
       pickle_object(gui, os.path.join(run_folder, 'gui.pickle'))
 
+      # Clear Matplotlib figures
+      gui.close()
+
 def pickle_object(object, filename):
   with open(filename, 'w') as file:
     pickle.dump(object, file)

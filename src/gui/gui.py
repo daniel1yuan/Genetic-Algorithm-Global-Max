@@ -87,6 +87,9 @@ class Gui(object):
   def show(self):
     plt.show()
 
+  def close(self):
+    plt.close()
+
   def update(self, i):
     plots = []
 
