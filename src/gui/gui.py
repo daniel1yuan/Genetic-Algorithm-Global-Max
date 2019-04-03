@@ -64,7 +64,7 @@ class Gui(object):
 
       plot.set_xlim(-1, 1)
       plot.set_ylim(-1, 1)
-      plot.set_zlim(-10, 10)
+      plot.set_zlim(-2, 2)
     else:
       plot = self.fig.add_subplot(111)
 
@@ -113,12 +113,13 @@ class Gui(object):
     scatter = plot.scatter([],[],[])
     solver.solve(self.problem, True)
     title = plot.set_title('')
+    frames = min(solver.get_storage_length(), self.num_frames)
 
     def update(i):
       solution_length = solver.get_storage_length()
-      index = int(float(i)/self.num_frames*solution_length)
+      index = i
       solution = solver.get_storage(index)
-      title.set_text('{}'.format(i))
+      title.set_text('{} - {}'.format(solver.solver_name, index))
 
       if solution:
         x = []
@@ -137,4 +138,4 @@ class Gui(object):
 
       return [scatter]
 
-    self.anim = FuncAnimation(figure, update, frames=self.num_frames, interval=self.num_frames/1000, blit=False)
+    return FuncAnimation(figure, update, frames=frames, interval=5/frames*1000, blit=False)

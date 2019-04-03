@@ -35,6 +35,9 @@ class GeneticAlgorithmSolver(Solver):
       self.iter_count += 1
       overall_fitness, max_fitness, max_individual = population.calculate_fitness(problem)
 
+      if should_store:
+        self._store(problem, population, max_individual)
+
       population.generate_new_population()
 
     return self.max_fitness, self.max_individual.vector
@@ -58,3 +61,16 @@ class GeneticAlgorithmSolver(Solver):
       return False
 
     return True
+
+  def _store(self, problem, population, max_individual):
+    storage_vector = []
+    for individual in population.population:
+      storage_vector.append((individual.get_vector(), individual.get_fitness(problem), individual is max_individual))
+
+    self.storage.append(storage_vector)
+
+  def get_storage(self, index=None):
+    if index is not None and self.storage is not None:
+      if index < len(self.storage) and index >= 0:
+        return self.storage[index]
+    return self.storage
