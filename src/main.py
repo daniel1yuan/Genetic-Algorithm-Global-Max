@@ -93,6 +93,10 @@ def run_benchmark(root_folder, times, feasible_ranges):
       brute_animation = gui.create_animation(brute_force_solver)
       brute_animation.save(os.path.join(run_folder, 'brute.gif'), writer='imagemagick', fps=30)
 
+      # Save Problem
+      figure, plot = gui.plot_problem()
+      figure.savefig(os.path.join(run_folder, 'problem.png'))
+
       # Pickle benchmark && solvers && polynomial
       pickle_object(genetic_algorithm_solver, os.path.join(run_folder, 'genetic_solver.pickle'))
       pickle_object(brute_force_solver, os.path.join(run_folder, 'brute_solver.pickle'))

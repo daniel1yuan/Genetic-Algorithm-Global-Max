@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.animation import FuncAnimation
 from utils.math_utils import normalize
-from constants import GUI_DEFAULT_PLOT_RESOLUTION, GUI_DEFAULT_FRAMES
+from constants import GUI_DEFAULT_PLOT_RESOLUTION, GUI_DEFAULT_FRAMES, GUI_DEFAULT_MAX_POINTS
 
 class Gui(object):
   def __init__(self, problem, search_range, plot_resolution=GUI_DEFAULT_PLOT_RESOLUTION, num_frames=GUI_DEFAULT_FRAMES):
@@ -38,7 +38,7 @@ class Gui(object):
     return plot
 
   def plot_problem(self):
-    _, plot = self.create_plot()
+    figure, plot = self.create_plot()
 
     # Calculate points for the problem
     x_points = []
@@ -60,6 +60,8 @@ class Gui(object):
 
     plot.plot_trisurf(x_points,y_points,z_points)
 
+    return figure, plot
+
   def create_plot(self):
     figure = plt.figure()
     if self.dimensions > 2:
@@ -78,6 +80,7 @@ class Gui(object):
     else:
       plot = self.fig.add_subplot(111)
 
+    self.figures.append(figure)
     return figure, plot
 
   def save(self, name):
@@ -89,48 +92,10 @@ class Gui(object):
 
   def close(self):
     plt.close()
+    plt.clf()
 
-  def update(self, i):
-    plots = []
-
-    for _, storage in self.storage.iteritems():
-      solver = storage['solver']
-      plot = storage['plot']
-      solution_length = solver.get_storage_length()
-      index = int(float(i)/self.num_frames*solution_length)
-      solution = solver.get_storage(index)
-      self.title.set_text('{}'.format(i))
-
-      if solution:
-        x = []
-        y = []
-        z = []
-
-        max_value = -1 * np.Inf
-        max_solution = None
-        for point in solution:
-          vector = point[0]
-          value = point[1]
-          is_current_max = point[2]
-
-          x.append(vector[0])
-          y.append(vector[1])
-          z.append(value)
-
-          if value > max_value:
-            max_value = value
-            max_solution = (vector[0], vector[1], value)
-
-        plot.set_data(x,y)
-        plot.set_3d_properties(z)
-
-        if max_solution:
-          max_plot.set_data(max_solution[0], max_solution[1])
-          max_plot.set_3d_properties(max_solution[2])
-          plots.append(max_plot)
-
-        plots.append(plot)
-    return plots
+    for figure in self.figures:
+      plt.close(figure)
 
   def create_animation(self, solver):
     self.storage = {}
@@ -139,19 +104,27 @@ class Gui(object):
     scatter = plot.scatter([],[],[])
     solver.solve(self.problem, True)
     title = plot.set_title('')
-    frames = min(solver.get_storage_length(), self.num_frames)
+    solution_length = solver.get_storage_length()
+    frames = min(solution_length, self.num_frames)
 
     def update(i):
-      solution_length = solver.get_storage_length()
+      # Scale index to length
       index = i
       solution = solver.get_storage(index)
+      num_points = min(GUI_DEFAULT_MAX_POINTS, len(solution))
+
       title.set_text('{} - {}'.format(solver.solver_name, index))
 
       if solution:
         x = []
         y = []
         z = []
-        for point in solution:
+
+        for index in range(num_points):
+          solution_index = int(index * float(len(solution))/num_points)
+          point = solution[solution_index]
+
+        # for point in solution:
           vector = point[0]
           value = point[1]
           is_current_max = point[2]
