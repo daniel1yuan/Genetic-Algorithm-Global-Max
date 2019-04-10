@@ -109,7 +109,7 @@ class Gui(object):
 
     def update(i):
       # Scale index to length
-      index = i
+      index = int(i * float(solution_length)/frames)
       solution = solver.get_storage(index)
       num_points = min(GUI_DEFAULT_MAX_POINTS, len(solution))
 
