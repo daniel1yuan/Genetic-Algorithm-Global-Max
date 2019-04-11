@@ -54,10 +54,8 @@ class GeneticAlgorithmSolver(Solver):
 
     if 1.0 - float(fitness)/self.max_fitness < self.threshold:
       self.count += 1
-    else:
-      self.count = 0
 
-    if self.count >= 10:
+    if self.count >= 100:
       return False
 
     return True

@@ -28,3 +28,8 @@ class Benchmark(object):
         'max_vector': max_vector,
         'time': end_time - start_time
       }
+
+  def get_metrics(self, id):
+    if id in self.benchmark:
+      return self.benchmark[id]
+    return None
