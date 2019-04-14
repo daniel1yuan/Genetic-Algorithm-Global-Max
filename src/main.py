@@ -5,6 +5,7 @@ import os
 import math
 import argparse
 import pickle
+import sys
 from numpy import median, average
 from datetime import datetime
 from problem.term import Term
@@ -41,10 +42,10 @@ def main():
 
   gui = Gui(polynomial, search_range)
   # benchmark = Benchmark([brute_force_solver, genetic_algorithm_solver])
-  # benchmark = Benchmark([genetic_algorithm_solver])
+  benchmark = Benchmark([genetic_algorithm_solver])
 
   # Benchmark
-  # benchmark.evaluate(polynomial)
+  benchmark.evaluate(polynomial)
 
   # Visualize Solvers
   # gui.create_animation(brute_force_solver)
@@ -84,10 +85,16 @@ def add_to_benchmark_payload(storage, solver, metric):
       storage[name][key]['min'] = min(data)
       storage[name][key]['max'] = max(data)
 
-def run_benchmark(root_folder, times, feasible_ranges):
+def run_benchmark(root_folder, times, feasible_ranges, polynomial=None):
   if not os.path.exists(root_folder):
     log.info('Creating Folder')
     os.makedirs(root_folder)
+
+  # Create Problem
+  if not polynomial:
+    polynomial = Polynomial(num_terms=5, num_dimensions=2)
+
+  log.info(polynomial)
 
   for feasible_range in feasible_ranges:
     search_range = SearchRange()
@@ -104,10 +111,6 @@ def run_benchmark(root_folder, times, feasible_ranges):
 
       if not os.path.exists(run_folder):
         os.mkdir(run_folder)
-
-        # Create Problem
-        polynomial = Polynomial(num_terms=5, num_dimensions=2)
-        log.info(polynomial)
 
         # Solvers
         brute_force_solver = BruteForceSolver(search_range)
@@ -154,5 +157,5 @@ def pickle_object(object, filename):
 if __name__ == '__main__':
   setup_logging()
   args = parser.parse_args()
-  run_benchmark(args.folder, 1, [100, 500, 1000, 2500, 5000, 7500, 10000])
+  run_benchmark(args.folder, 1, [100, 500, 1000, 2500, 5000, 7500, 10000, 100000, 1000000])
   # main()

@@ -90,6 +90,9 @@ class Gui(object):
   def show(self):
     plt.show()
 
+  def draw(self):
+    plt.show(block=False)
+
   def close(self):
     plt.close()
     plt.clf()

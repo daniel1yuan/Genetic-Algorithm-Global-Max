@@ -5,6 +5,7 @@ from random import uniform
 import numpy as np
 from individual import Individual
 from constants import DEFAULT_POPULATION_SIZE
+import pdb
 
 class Population(object):
   def __init__(self, search_range, dimension, population_size=DEFAULT_POPULATION_SIZE, mutation_rate=0.05):
@@ -34,7 +35,7 @@ class Population(object):
     # Normalize Fitness
     overall_fitness = 0
 
-    translate_fitness = min_fitness if min_fitness < 0 else -1 * min_fitness
+    translate_fitness = -1 * min_fitness
     scale_fitness = max_fitness - min_fitness
     for individual in self.population:
       individual.fitness += translate_fitness
@@ -46,7 +47,7 @@ class Population(object):
 
   def generate_new_population(self):
     new_population = []
-    self.population.sort(key=lambda x: x.fitness)
+    self.population.sort(key=lambda x: x.fitness, reverse=True)
 
     for _ in range(self.population_size):
       parent_a = self._pick_vector()
@@ -63,7 +64,6 @@ class Population(object):
     for i in range(self.population_size):
       vectors.append(Individual(None, self.search_range, self.dimension))
     return vectors
-
 
   def _pick_vector(self):
     target_fitness = uniform(0,1)
