@@ -9,7 +9,7 @@ The impact of this project is the ability to create problems dynamically and vis
 ### Examples
 ---
 
-**Problem**: 
+**Problem**:
 This is an example polynomial where (x,y) is the search space and the z-axis is the evaluated values
 ![problem.png](assets/polynomial.png)
 
@@ -22,15 +22,12 @@ The genetic algorithm uses an evolutional approach to solve the same problem in 
 ![genetic.gif](assets/genetic_algorithm.gif)
 
 **Staticstics**
-|            | Brute Force Solver | Genetic Algorithm Solver |
-|------------|--------------------|--------------------------|
-| Time Taken | 3.81 seconds       | 0.129 seconds            |
-| Solution   | 1.90904270986      | 1.8964056831             |
+|| Brute Force Solver | Genetic Algorithm Solver |
+| --- | --- |
+| Time Taken | 3.81 seconds | 0.129 seconds |
+| Solution | 1.90904270986 | 1.8964056831 |
 
 ## Usage
-
-### Design
----
 #### Problem
 The problem is a generalized concept of some n-dimensional space that could be explored and evaluated to return some value, which would be the parameter to maximize globally. In this specific case, the problem of choice is a n-dimensional, m-term polynomial.
 
