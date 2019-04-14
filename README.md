@@ -11,19 +11,23 @@ The impact of this project is the ability to create problems dynamically and vis
 
 **Problem**:
 This is an example polynomial where (x,y) is the search space and the z-axis is the evaluated values
+
 ![problem.png](assets/polynomial.png)
 
 **Brute Force**:
 This specific example uses a brute force solver over a capped 1,000,000 iterations to search for the max by simply iterating through the space and searching for the maximum value.
+
 ![brute.gif](assets/brute_force.gif)
 
 **Genetic Algorithm**:
 The genetic algorithm uses an evolutional approach to solve the same problem in 31 generations with a population size of 500.
+
 ![genetic.gif](assets/genetic_algorithm.gif)
 
 **Staticstics**
-|| Brute Force Solver | Genetic Algorithm Solver |
-| --- | --- |
+
+| | Brute Force Solver | Genetic Algorithm Solver |
+| --- | --- | --- |
 | Time Taken | 3.81 seconds | 0.129 seconds |
 | Solution | 1.90904270986 | 1.8964056831 |
 
